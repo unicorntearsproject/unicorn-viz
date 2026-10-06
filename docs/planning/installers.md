@@ -1396,6 +1396,12 @@ constraints, stated plainly:
       The bucket is versioned, so the replaced object is still retrievable. Public
       URLs: `https://ut-software-dist.s3.amazonaws.com/<key>` (public-read policy);
       `software.unicornviz.com` (CloudFront) returned 403 for every key when checked.
+  - **2026-10-05: nightly runs paused (owner).** `installer-smoke.yml` no longer has
+    a `schedule:`; it runs only by hand (`gh workflow run installer-smoke.yml`).
+    `compat-matrix.yml`, `release-installers.yml` and `windows-ft-wheels.yml` were
+    already manual/tag-only. GitHub's own CodeQL default setup still runs weekly
+    (a repository setting, not a workflow file; left as is pending the owner).
+    The earlier "nightly" wording in this plan is historical.
   - **Where we stopped / next.**
     1. *(Written 2026-10-01, `.github/workflows/windows-ft-wheels.yml`; dispatch
        with `only=sphn` first, then the trio, then OpenCV.)* Write `.github/workflows/windows-ft-wheels.yml` (owner approved a GH
