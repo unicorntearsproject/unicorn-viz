@@ -527,14 +527,16 @@ The owner makes their own edits to `config.toml` at any time.
 
 ## Drop-In Source Policy
 
-- Every drop-in under `drop-ins/` must live in its own dedicated **private**
-  GitHub repository.
+- Every drop-in under `drop-ins/` must live in its own dedicated GitHub
+  repository.  New repositories start **private**; the owner decides when a
+  drop-in goes public (27 did on 2026-10-15; the rest stay private).  Agents
+  never change a repository's visibility on their own.
 - The main `unicorn-viz` repository must track drop-ins as git submodules,
   one submodule per drop-in directory.
 - Keep `unicornviz/` compatibility shims lightweight and point canonical
   implementations to the corresponding drop-in submodule paths.
 - When adding a new drop-in, the agent should automatically create a new
-  private GitHub repository for it and wire it into `drop-ins/` as a submodule.
+  private GitHub repository for it (the owner can make it public later) and wire it into `drop-ins/` as a submodule.
 - When modifying a drop-in, the agent must commit and push changes in the
   drop-in's own repository first, then commit and push the updated submodule
   pointer in the main `unicorn-viz` repository (from the seat worktree, landed
