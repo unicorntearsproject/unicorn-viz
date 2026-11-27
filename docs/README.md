@@ -92,6 +92,7 @@ This is the canonical map for project documentation.
 - Director placement scoring — per-call "did the scene land" metrics with chance baselines, built into packaging (2026-09-03): [docs/planning/director-placement-scoring-2026-09-03.md](planning/director-placement-scoring-2026-09-03.md)
 - E5 envelope-clock redesign patch — timing-correct onset envelope for the beat tracker, parked pending a stack re-tune (2026-09-03): [docs/planning/patches/e5-envelope-clock-redesign-2026-09-03.patch](planning/patches/e5-envelope-clock-redesign-2026-09-03.patch)
 - Active audit tracker: [docs/audits](audits)
+  - **Video Out and MIDI Controllers audit (2026-11-27; 2 P1, 15 P2, 24 P3, all open; no hardware touched; recommended tests included):** [audits/2026-11-27-video-out-and-midi-controllers-audit.md](audits/2026-11-27-video-out-and-midi-controllers-audit.md)
   - **Webcam and Streaming audit (2026-11-27; 0 P1, 9 P2, 17 P3, all open; includes a live Rumble test-endpoint run and recommended tests):** [audits/2026-11-27-webcam-and-streaming-audit.md](audits/2026-11-27-webcam-and-streaming-audit.md)
   - **Banner, Lyrics and Chat audit (2026-11-27; 0 P1, 8 P2, 22 P3, all open; recommended tests included):** [audits/2026-11-27-banner-lyrics-chat-audit.md](audits/2026-11-27-banner-lyrics-chat-audit.md)
   - **Textures, Sims, Unicorn Tears and Grand Finale audit (2026-11-27; 0 P1, 8 P2, 19 P3, all open; recommended tests included):** [audits/2026-11-27-textures-sims-unicorn-tears-grand-finale-audit.md](audits/2026-11-27-textures-sims-unicorn-tears-grand-finale-audit.md)
