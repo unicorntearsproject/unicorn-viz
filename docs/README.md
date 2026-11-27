@@ -92,6 +92,7 @@ This is the canonical map for project documentation.
 - Director placement scoring — per-call "did the scene land" metrics with chance baselines, built into packaging (2026-09-03): [docs/planning/director-placement-scoring-2026-09-03.md](planning/director-placement-scoring-2026-09-03.md)
 - E5 envelope-clock redesign patch — timing-correct onset envelope for the beat tracker, parked pending a stack re-tune (2026-09-03): [docs/planning/patches/e5-envelope-clock-redesign-2026-09-03.patch](planning/patches/e5-envelope-clock-redesign-2026-09-03.patch)
 - Active audit tracker: [docs/audits](audits)
+  - **Textures, Sims, Unicorn Tears and Grand Finale audit (2026-11-27; 0 P1, 8 P2, 19 P3, all open; recommended tests included):** [audits/2026-11-27-textures-sims-unicorn-tears-grand-finale-audit.md](audits/2026-11-27-textures-sims-unicorn-tears-grand-finale-audit.md)
   - **Media player + Image Showcase audit — media-01 and images-01 (2026-11-27; 2 P1, 17 P2, 26 P3, all open; recommended tests included):** [audits/2026-11-27-media-and-images-audit.md](audits/2026-11-27-media-and-images-audit.md)
   - **Video Clips + Videos audit — performance and clip loading (2026-11-27; 3 P1, 9 P2, 14 P3, all open; measured optimization options):** [audits/2026-11-27-video-clips-and-videos-audit.md](audits/2026-11-27-video-clips-and-videos-audit.md)
   - **Beat-flash, color-grade and candy-frame audit (2026-11-27; 0 P1, 4 P2, 27 P3, all open):** [audits/2026-11-27-beat-flash-color-grade-candy-frame-audit.md](audits/2026-11-27-beat-flash-color-grade-candy-frame-audit.md)
