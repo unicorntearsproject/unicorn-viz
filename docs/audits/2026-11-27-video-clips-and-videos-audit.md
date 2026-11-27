@@ -385,6 +385,59 @@ per frame in PyAV).  Plain RGBA is a smaller change for a 2 to 3 times gain.
 A pixel buffer object did not help on this driver.  These ratios are for
 Mesa on Intel; a discrete GPU may differ.
 
+## Recommended tests
+
+Each is written to fail against the current code where a finding is open.
+The timing tests should assert on **counts and structure** (what ran on
+which thread, how many frames were converted, how many seeks happened), not
+on milliseconds, so they are stable on any machine.  Small synthetic clips
+generated with PyAV in a temp folder, as `tests/test_deck_video_source.py`
+already does, are enough for all of them.
+
+### video-clips-01 (no tests in the drop-in today)
+
+| Test | Covers | Kind |
+|---|---|---|
+| With a capture class that records the calling thread, no file is opened, read or seeked from `update()` or `render()` after the first frame | P1-3, P2-1 | Python (fake `cv2`) |
+| Activation of a 60-clip group opens at most two files before the first frame is drawn | P1-3 | Python (fake `cv2`) |
+| After cycling through a 20-clip group, at most two captures and two textures are open | P2-2 | Python (fake `cv2`, fake context) |
+| With the same still image in both slots, the rendered frame before and after a clip change differs by no more than a normal frame-to-frame step | P2-3 | GL |
+| A 60 fps clip driven at 30 fps and at 20 fps advances the same amount of video per second as at 60 fps | P2-4 | Python (fake `cv2` counting frame index) |
+| A beat does not change the crossfade value for a single frame and then revert | P3-1 | Python |
+| Replacing a clip file on disk refreshes its cached metadata | P3-3 | Python |
+| `destroy()` releases every capture and texture, including after a failed open | holds today; unpinned | Python (fakes) |
+| A group folder with no videos, an unreadable file and a zero-length file each leave the effect drawing without raising | robustness; unpinned | Python |
+
+### videos-01 — Video Player
+
+| Test | Covers | Kind |
+|---|---|---|
+| With the audio stream unavailable and a real `_Decoder` on a clip **that has an audio track**, the picture keeps advancing past 1 s | P2-5 (the existing test stubs the decoder, so it cannot see this) | Python + PyAV |
+| With a fake stream calling the callback every 85 ms, at least 90% of a 30 fps clip's frames are presented | P2-6 | Python + PyAV |
+| The frame handed to `render()` is never larger than the output size (or is uploaded without a `tobytes()` copy) | P2-7 | Python (fake context) |
+| The clock does not start until the first audio chunk is delivered, so picture and sound start together; an induced underrun does not leave a permanent offset | P3-7 | Python + PyAV |
+| `_init` with no videos does not open an audio stream | P3-8 | Python (fake `sd`) |
+| Fifteen rapid reopens leave no extra live threads after `destroy()` | holds today; unpinned | Python + PyAV |
+
+### videos-01 — DeckVideoSource
+
+| Test | Covers | Kind |
+|---|---|---|
+| On a clip with a 10 s keyframe interval, a jump to a point 9.5 s after a keyframe returns a frame within one frame interval, and `stats()['seeks']` stops rising | P1-1 | Python + PyAV |
+| The same test at 60 fps and at a 1,280 px long edge (both shrink the ring's time coverage) | P1-1 | Python + PyAV |
+| After a cue jump, the number of frames **converted** before the first publish is bounded by the distance from the keyframe to the target, with none converted before the kept window | P1-2 | Python + PyAV (count `_downscale` calls) |
+| Reverse play at −1× for 6 s keeps at least 95% of lookups within one frame interval | P2-8 | Python + PyAV |
+| The scaler is called with a fast interpolation mode | P2-9 | Python (spy on `reformat`) |
+| Forward play at 1× and 1.5× stays at 100% hits with zero seeks | holds today; partly covered | Python + PyAV |
+| `close()` returns within a short bound while a refill is in progress | P3-10 | Python + PyAV |
+| The ring's byte size never exceeds the memory budget at long edges of 720, 960 and 1,280 | holds today; unpinned at 720 | Python + PyAV |
+
+### Core
+
+| Test | Covers | Kind |
+|---|---|---|
+| `VideoDeckLayer` creates its deck texture in the agreed upload format, and writes the frame without an intermediate copy | P3-14 | Python (fake context; `tests/test_video_deck_layer.py`) |
+
 ## What works
 
 - **Forward deck playback.**  100% fresh frames at 720p and 1080p at 1× and

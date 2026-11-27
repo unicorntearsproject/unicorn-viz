@@ -195,6 +195,52 @@ not run in the live app.
 |---|---|---|
 | P3-27 | `app.py:8239-8242` vs `:8267-8269`, `:8162`, `:8393` | With the projectM manager open, `_candy_active()` reports the frame as off, so the scene may be drawn straight to the screen, but the viewport still shrinks the effect and the overlay step still composites the frame from `fbo_a`, which was not updated that frame.  By reading; not run |
 
+## Recommended tests
+
+None of these exist today.  Each is written to fail against the current code
+where a finding is open, so it documents the intended behavior before any
+fix.  "GL" means it needs an offscreen context (the pattern used by the
+postfx tests); the rest are pure Python.
+
+### beat-flash-01
+
+| Test | Covers | Kind |
+|---|---|---|
+| Peak-flash output for a mid-gray and a black source stays below pure white in every mode, at the default and at the maximum brightness | P2-1 | GL |
+| `Config.validate()` accepts `max_hz = 5` (or the validator has a warning channel) and the governor then reports 3.0 | P2-2 | Python |
+| No one-second window holds more than 3 flashes, at 24, 60, 144 and 1000 fps, with a beat edge every other frame | rate cap (holds today; no test pins it across frame rates) | Python |
+| `beat_division = 2` at 6 beats per second yields the documented rate | P3-1 | Python |
+| Validator rejects booleans for numeric keys, `beat_division < 1`, negative `flash_duration` and a malformed `color` | P3-2 | Python |
+| NaN beat, NaN frame time and NaN brightness never arm a flash | holds today | Python |
+| `destroy()` releases the remaining GL objects when the first release raises | P3-6 | Python (fakes) |
+
+### color-grade-01
+
+| Test | Covers | Kind |
+|---|---|---|
+| An identity `.cube` and the procedural neutral look return the source exactly; a channel-swap `.cube` swaps the right channels | holds today; guards the LUT axis order | GL |
+| A `.cube` with `DOMAIN_MAX` other than 1 is either applied correctly or rejected with a warning | P3-9 | Python |
+| A LUT file named like a built-in look is selectable and applied | P3-11 | Python |
+| A misspelled `default_grade` logs a warning | P3-12 | Python |
+| A LUT whose texture cannot be created is not left in the look list | P3-13 | Python (fake context) |
+| `lut_dir` outside the project root is refused, and the default folder resolves from the app root | P3-8 | Python |
+| Validator rejects `intensity = true` | P3-14 | Python |
+| `destroy()` releases every LUT texture when one release raises | P3-15 | Python (fakes) |
+
+### candy-frame-01
+
+| Test | Covers | Kind |
+|---|---|---|
+| Two controllers built with no `seed` do not always open on the same pattern (statistical: several builds, more than one opener) | P2-3 | Python (fake context) |
+| For render scales 0.5, 0.75 and 1.0, the rectangle from `content_viewport()` meets the shader's inner edge when both are expressed in window pixels | P2-4 | Python for the geometry, GL for the picture |
+| `intensity = 0`, `outer_fill_mix = 0` and `inset_px = 0` are honored, not replaced by defaults | P3-18 | Python |
+| For insets of 4, 76, 300 and 600, the frame's inner edge and `content_viewport()` agree | P3-19 | GL |
+| A pattern file that fails to import is skipped with a warning and the other packs still load | P3-21 | Python |
+| A config validator exists and rejects a non-numeric `inset_px`, a negative `intensity` and an unknown `outer_fill_mode` | P3-20 | Python |
+| NaN audio levels leave the frame band drawn, not black | P3-23 | GL |
+| Pixels inside the content rectangle are unchanged by the frame pass | holds today | GL |
+| Blending is disabled again after `render()` | P3-24 | Python (fake context) |
+
 ## What works
 
 - **Flash rate cap.**  With a beat edge every other frame for ten seconds, no
